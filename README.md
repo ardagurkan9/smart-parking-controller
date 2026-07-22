@@ -20,16 +20,16 @@ The project is designed to practice bitwise operations, modular C programming, s
 
 The controller stores its main states in a single 8-bit register. Each bit represents one component or operating condition.
 
-| Bit | Mask   | State             | Set (`1`) means |
-|----:|:------:|-------------------|-----------------|
-| 0   | `0x01` | Red light         | Red light is on |
-| 1   | `0x02` | Yellow light      | Yellow light is on |
-| 2   | `0x04` | Green light       | Green light is on |
-| 3   | `0x08` | Barrier           | Barrier is open |
-| 4   | `0x10` | Alarm             | Alarm is active |
-| 5   | `0x20` | Parking full      | No spaces are available |
-| 6   | `0x40` | Emergency mode    | Emergency mode is active |
-| 7   | `0x80` | System enabled    | Controller is enabled |
+| Bit |   Mask   | State          | Set (`1`) means        |
+| --: | :------: | -------------- | ------------------------ |
+|   0 | `0x01` | Red light      | Red light is on          |
+|   1 | `0x02` | Yellow light   | Yellow light is on       |
+|   2 | `0x04` | Green light    | Green light is on        |
+|   3 | `0x08` | Barrier        | Barrier is open          |
+|   4 | `0x10` | Alarm          | Alarm is active          |
+|   5 | `0x20` | Parking full   | No spaces are available  |
+|   6 | `0x40` | Emergency mode | Emergency mode is active |
+|   7 | `0x80` | System enabled | Controller is enabled    |
 
 Example:
 
@@ -84,7 +84,7 @@ On Windows PowerShell:
 
 ### Phase 1 — Project Foundation
 
-- [ ] Create the `include`, `src`, and `tests` directories
+- [X] Create the `include`, `src`, and `tests` directories
 - [ ] Add the initial application entry point
 - [ ] Define register masks and bitwise state helpers
 - [ ] Add a Makefile with build, run, test, and clean targets

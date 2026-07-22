@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+
 typedef uint8_t controller_status_t;
 
 enum {
@@ -19,22 +20,15 @@ enum {
 
 typedef struct {
     controller_status_t status;
+    uint8_t capacity;
+    uint8_t occupancy;
 } controller_t;
 
 
 void controller_init(
     controller_t *controller,
-    controller_status_t initial_status
-);
-
-void controller_set_status(
-    controller_t *controller,
-    controller_status_t status
-);
-
-void controller_clear_status(
-    controller_t *controller,
-    controller_status_t status
+    controller_status_t initial_status,
+    uint8_t capacity
 );
 
 bool controller_status_check(
@@ -42,4 +36,44 @@ bool controller_status_check(
     controller_status_t status
 );
 
-#endif // CONTROLLER_H
+void controller_set_light(
+    controller_t *controller,
+    controller_status_t light_status
+);
+
+bool controller_open_barrier(
+    controller_t *controller
+);
+
+bool controller_close_barrier(
+    controller_t *controller
+);
+
+void controller_enable(
+    controller_t *controller
+);
+
+void controller_disable(
+    controller_t *controller
+);
+
+void controller_enter_emergency(
+    controller_t *controller
+);
+
+void controller_exit_emergency(
+    controller_t *controller
+);
+
+bool controller_vehicle_enter(
+    controller_t *controller
+);
+
+bool controller_vehicle_exit(
+    controller_t *controller
+);
+
+int controller_available_spaces(
+    const controller_t *controller
+);
+#endif
