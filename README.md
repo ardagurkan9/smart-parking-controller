@@ -1,129 +1,223 @@
 # Smart Parking Controller
 
-Smart Parking Controller is a terminal-based parking management simulation written in C. It models the core components of a parking entrance, including access control, traffic lights, a barrier, capacity tracking, and an alarm system.
+A modular parking management simulation written in C11.
 
-The project is designed to practice bitwise operations, modular C programming, state management, dynamic memory, and automated testing.
+The project models the core behavior of a smart parking entrance: access
+control, traffic lights, a barrier, capacity tracking, alarms, emergency
+behavior, and vehicle records. Future phases will extend the system with an
+event-driven state machine, parking sessions, pricing, and persistence.
+
+## Project Goals
+
+This project is designed to practice:
+
+- Modular C programming with separate header and source files
+- Bitwise operations and register-style state management
+- Dynamic memory allocation and cleanup
+- State machines and event-driven design
+- Defensive input validation and detailed error handling
+- Unit and integration testing
+
+## Current Features
+
+- [x] Eight-bit controller state register
+- [x] Red, yellow, and green traffic-light control
+- [x] Barrier open and close operations
+- [x] System enable and disable behavior
+- [x] Alarm and emergency behavior
+- [x] PIN validation and failed-attempt tracking
+- [x] Parking capacity and occupancy tracking
+- [x] Vehicle entry, exit, and full-lot handling
+- [x] Dynamic vehicle record storage
+- [x] Vehicle add, search, list, and remove operations
+- [x] Safe cleanup of dynamically allocated vehicle records
 
 ## Planned Features
 
-- Vehicle entry and exit operations
-- PIN-based access control
-- Parking capacity and occupancy tracking
-- Red, yellow, and green traffic-light control
-- Barrier opening and closing
-- Alarm activation after repeated invalid attempts
-- Emergency mode
-- Vehicle record management
-- System status display
+- Finite state machine for the main parking workflow
+- Fixed-capacity circular event queue
+- Detailed and readable result codes
+- Parking sessions and ticket management
+- Configurable fee calculation using integer cents
+- Save and load support for sessions and system settings
+- Expanded unit and integration tests
+- Strict warning, memory, and undefined-behavior checks
 
-## System State Register
+## Architecture
 
-The controller stores its main states in a single 8-bit register. Each bit represents one component or operating condition.
+The project is split into focused modules:
 
-| Bit |   Mask   | State          | Set (`1`) means        |
-| --: | :------: | -------------- | ------------------------ |
-|   0 | `0x01` | Red light      | Red light is on          |
-|   1 | `0x02` | Yellow light   | Yellow light is on       |
-|   2 | `0x04` | Green light    | Green light is on        |
-|   3 | `0x08` | Barrier        | Barrier is open          |
-|   4 | `0x10` | Alarm          | Alarm is active          |
-|   5 | `0x20` | Parking full   | No spaces are available  |
-|   6 | `0x40` | Emergency mode | Emergency mode is active |
-|   7 | `0x80` | System enabled | Controller is enabled    |
+| Module | Responsibility |
+| --- | --- |
+| `controller` | Component states, lights, barrier, alarm, emergency, and capacity |
+| `access` | PIN validation, failed attempts, and access lock state |
+| `vehicle` | Dynamic vehicle records, lookup, insertion, removal, and cleanup |
+| `state_machine` | Planned main workflow and valid state transitions |
+| `event_queue` | Planned FIFO event delivery using a circular queue |
+| `session` | Planned parking tickets and active session tracking |
+| `pricing` | Planned fee policies and integer-based charge calculation |
+| `persistence` | Planned safe file save and load operations |
+
+## Controller State Register
+
+The controller stores its component states in a single eight-bit register.
+Each bit represents one independent on/off condition.
+
+| Bit | Mask | State | Set (`1`) means |
+| ---: | :---: | --- | --- |
+| 0 | `0x01` | Red light | Red light is on |
+| 1 | `0x02` | Yellow light | Yellow light is on |
+| 2 | `0x04` | Green light | Green light is on |
+| 3 | `0x08` | Barrier | Barrier is open |
+| 4 | `0x10` | Alarm | Alarm is active |
+| 5 | `0x20` | Parking full | No spaces are available |
+| 6 | `0x40` | Emergency mode | Emergency mode is active |
+| 7 | `0x80` | System enabled | Controller is enabled |
 
 Example:
 
 ```text
-Register: 10000101 (0x85)
-Active bits: 7, 2, and 0
-State: system enabled, green light on, red light on
+Register: 10001001 (0x89)
+Active: system enabled, barrier open, red light on
 ```
 
-## Target Project Structure
+The register represents component states. The planned finite state machine
+will separately represent workflow states such as PIN validation, barrier
+opening, vehicle passage, alarm, and emergency handling.
 
-The implementation will follow this layout as the project is developed:
+## Project Structure
 
 ```text
 smart-parking-controller/
-|-- include/               # Public header files
-|-- src/                   # Application source files
-|-- tests/                 # Automated tests
-|-- Makefile               # Build and test commands
-|-- README.md              # Project documentation
-`-- .gitignore
+|-- include/
+|   |-- access.h
+|   |-- controller.h
+|   `-- vehicle.h
+|-- src/
+|   |-- access.c
+|   |-- controller.c
+|   |-- main.c
+|   `-- vehicle.c
+|-- tests/
+|   |-- test_access.c
+|   |-- test_controller.c
+|   `-- test_vehicle.c
+|-- README.md
+`-- Makefile                 # Planned
 ```
 
 ## Requirements
 
 - A C11-compatible compiler such as GCC or Clang
-- GNU Make (optional, once the Makefile is available)
+- GNU Make once the Makefile phase is complete
 
-## Build
+## Building the Tests
 
-Compile directly with GCC:
+Until a Makefile is added, each test can be compiled separately.
 
-```bash
-gcc -std=c11 -Wall -Wextra -Wpedantic -Iinclude src/*.c -o parking_controller
-```
-
-## Run
-
-On Linux or macOS:
+Controller tests:
 
 ```bash
-./parking_controller
+gcc -std=c11 -Wall -Wextra -Wpedantic -Iinclude \
+    tests/test_controller.c src/controller.c \
+    -o test_controller
 ```
 
-On Windows PowerShell:
+Access and alarm tests:
 
-```powershell
-.\parking_controller.exe
+```bash
+gcc -std=c11 -Wall -Wextra -Wpedantic -Iinclude \
+    tests/test_access.c src/access.c src/controller.c \
+    -o test_access
+```
+
+Vehicle record tests:
+
+```bash
+gcc -std=c11 -Wall -Wextra -Wpedantic -Iinclude \
+    tests/test_vehicle.c src/vehicle.c \
+    -o test_vehicle
 ```
 
 ## Roadmap
 
-### Phase 1 — Project Foundation
+### Phase 1 — Foundation
 
-- [X] Create the `include`, `src`, and `tests` directories
-- [ ] Add the initial application entry point
-- [X] Define register masks and bitwise state helpers
-- [ ] Add a Makefile with build, run, test, and clean targets
+- [x] Create the project directory structure
+- [x] Define register masks and bitwise state helpers
+- [ ] Complete the application entry point
+- [ ] Add a Makefile with build, test, and clean targets
 
 ### Phase 2 — Controller Components
 
-- [X] Implement traffic-light states and valid transitions
-- [X] Implement barrier open and close operations
-- [X] Implement system enable and disable states
-- [X] Implement emergency mode and safe component behavior
+- [x] Implement traffic-light behavior
+- [x] Implement barrier operations
+- [x] Implement system enable and disable behavior
+- [x] Implement alarm and emergency behavior
 
 ### Phase 3 — Access and Capacity
 
-- [X] Add PIN creation and verification
-- [X] Track consecutive invalid PIN attempts
-- [X] Activate and reset the alarm
-- [X] Configure parking capacity
-- [X] Handle vehicle entry, exit, and full-lot conditions
+- [x] Add PIN creation and validation
+- [x] Track consecutive invalid PIN attempts
+- [x] Activate and reset the alarm
+- [x] Configure parking capacity
+- [x] Handle entry, exit, and full-lot conditions
 
 ### Phase 4 — Vehicle Records
 
-- [ ] Define the vehicle record structure
-- [ ] Store vehicle records using dynamic memory
-- [ ] Search, list, and remove vehicle records
-- [ ] Release all allocated memory safely
+- [x] Define vehicle records
+- [x] Store records using dynamic memory
+- [x] Add, search, list, and remove records
+- [x] Release allocated memory safely
 
-### Phase 5 — User Interface and Quality
+### Phase 5 — State and Event Architecture
 
-- [ ] Add an interactive terminal menu
-- [ ] Display register, component, and occupancy status
-- [ ] Validate user input and handle errors gracefully
-- [ ] Add unit and integration tests
-- [ ] Run builds with strict compiler warnings enabled
-- [ ] Add memory and undefined-behavior checks
+- [ ] Define finite state machine states and events
+- [ ] Allow only valid state transitions
+- [ ] Return detailed errors for invalid transitions
+- [ ] Implement a fixed-capacity circular event queue
+- [ ] Support `O(1)` push, pop, and peek operations
+- [ ] Handle full, empty, and wrap-around queue states
 
-## Contributing
+### Phase 6 — Parking Sessions and Pricing
 
-Keep modules focused, expose public interfaces through header files, and compile with all warning flags enabled. New behavior should include corresponding tests whenever possible.
+- [ ] Track tickets, plates, vehicle types, and timestamps
+- [ ] Store sessions in a safely growing dynamic array
+- [ ] Prevent duplicate active sessions
+- [ ] Search sessions by plate or ticket
+- [ ] Close active sessions during vehicle exit
+- [ ] Calculate fees using integer cents
+- [ ] Support free time, hourly rounding, daily limits, and lost tickets
+- [ ] Support category-specific pricing policies
+
+### Phase 7 — Errors and Persistence
+
+- [ ] Introduce shared detailed result codes
+- [ ] Convert result codes to readable messages
+- [ ] Save sessions and required settings
+- [ ] Load and validate saved data safely
+- [ ] Reject missing, empty, corrupt, or duplicate records
+- [ ] Handle file and allocation failures
+
+### Phase 8 — Quality
+
+- [ ] Validate all public module inputs
+- [ ] Expand unit and integration tests
+- [ ] Test state transitions and queue wrap-around
+- [ ] Test session and pricing boundaries
+- [ ] Test persistence round trips and corrupt files
+- [ ] Build with strict compiler warnings
+- [ ] Run memory and undefined-behavior checks
+
+## Development Guidelines
+
+- Keep each module focused on one responsibility.
+- Expose public interfaces through header files.
+- Keep private helpers inside their source modules.
+- Avoid floating-point values for money.
+- Check every memory allocation and file operation.
+- Add tests for new behavior and failure paths.
 
 ## License
 
-No license has been selected yet.
+This project is licensed under the [MIT License](LICENSE).
