@@ -118,3 +118,17 @@ int controller_available_spaces(
 ){
     return controller->capacity - controller->occupancy;
 }
+
+void controller_activate_alarm(
+    controller_t *controller
+){
+    controller->status |= STATUS_ALARM;
+    controller_set_light(controller, STATUS_RED);
+    controller -> status &= ~STATUS_BARRIER;
+}
+
+void controller_reset_alarm(
+    controller_t *controller
+){
+    controller->status &= ~STATUS_ALARM;
+}

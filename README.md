@@ -86,23 +86,23 @@ On Windows PowerShell:
 
 - [X] Create the `include`, `src`, and `tests` directories
 - [ ] Add the initial application entry point
-- [ ] Define register masks and bitwise state helpers
+- [X] Define register masks and bitwise state helpers
 - [ ] Add a Makefile with build, run, test, and clean targets
 
 ### Phase 2 — Controller Components
 
-- [ ] Implement traffic-light states and valid transitions
-- [ ] Implement barrier open and close operations
-- [ ] Implement system enable and disable states
-- [ ] Implement emergency mode and safe component behavior
+- [X] Implement traffic-light states and valid transitions
+- [X] Implement barrier open and close operations
+- [X] Implement system enable and disable states
+- [X] Implement emergency mode and safe component behavior
 
 ### Phase 3 — Access and Capacity
 
-- [ ] Add PIN creation and verification
-- [ ] Track consecutive invalid PIN attempts
-- [ ] Activate and reset the alarm
-- [ ] Configure parking capacity
-- [ ] Handle vehicle entry, exit, and full-lot conditions
+- [X] Add PIN creation and verification
+- [X] Track consecutive invalid PIN attempts
+- [X] Activate and reset the alarm
+- [X] Configure parking capacity
+- [X] Handle vehicle entry, exit, and full-lot conditions
 
 ### Phase 4 — Vehicle Records
 

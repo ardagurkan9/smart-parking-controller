@@ -76,4 +76,14 @@ bool controller_vehicle_exit(
 int controller_available_spaces(
     const controller_t *controller
 );
+
+void controller_activate_alarm(
+    controller_t *controller
+);
+
+void controller_reset_alarm(
+    controller_t *controller
+);
+
+
 #endif
