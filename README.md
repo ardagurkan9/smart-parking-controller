@@ -103,17 +103,29 @@ smart-parking-controller/
 |   |-- test_controller.c
 |   `-- test_vehicle.c
 |-- README.md
-`-- Makefile                 # Planned
+`-- Makefile
 ```
 
 ## Requirements
 
 - A C11-compatible compiler such as GCC or Clang
-- GNU Make once the Makefile phase is complete
+- GNU Make
 
 ## Building the Tests
 
-Until a Makefile is added, each test can be compiled separately.
+Build and run every test:
+
+```bash
+make test
+```
+
+Remove generated build files:
+
+```bash
+make clean
+```
+
+Each test can also be compiled separately.
 
 Controller tests:
 
@@ -146,7 +158,7 @@ gcc -std=c11 -Wall -Wextra -Wpedantic -Iinclude \
 - [x] Create the project directory structure
 - [x] Define register masks and bitwise state helpers
 - [ ] Complete the application entry point
-- [ ] Add a Makefile with build, test, and clean targets
+- [x] Add a Makefile with build, test, and clean targets
 
 ### Phase 2 — Controller Components
 
@@ -206,7 +218,7 @@ gcc -std=c11 -Wall -Wextra -Wpedantic -Iinclude \
 - [ ] Test state transitions and queue wrap-around
 - [ ] Test session and pricing boundaries
 - [ ] Test persistence round trips and corrupt files
-- [ ] Build with strict compiler warnings
+- [x] Build with strict compiler warnings
 - [ ] Run memory and undefined-behavior checks
 
 ## Development Guidelines
